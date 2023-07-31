@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Author;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -35,10 +36,11 @@ class BookMangmentTest extends TestCase
 
     private function data(array $data = []) : array
     {
+        $author = Author::factory()->create();
         return count($data) > 0 ? $data : [
             'title' => 'The Lord of the Rings',
             'description' => 'The Lord of the Rings is an epic high-fantasy novel written by English author and scholar J. R. R. Tolkien.',
-            'author_id' => '1',
+            'author_id' => $author->id,
             'ISBN' => '12B-422-24FF',
         ];
     }

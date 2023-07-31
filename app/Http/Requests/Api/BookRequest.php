@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Rules\Isbn;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BookRequest extends FormRequest
@@ -31,17 +32,16 @@ class BookRequest extends FormRequest
             case 'POST':{
                     return [
 						'title' => 'required',
-						'description' => 'required',
-						'author_id' => 'required',
-						'ISBN' => 'required',
+						'description' => ['required','min:10'],
+						'author_id' => 'required|exists:authors,id',
+						'ISBN' => [new Isbn()],
                     ];
                 }
             case 'PUT':{
                     return [
 						'title' => 'required',
-						'description' => 'required',
+						'description' => 'required|min:10',
 						'author_id' => 'required',
-						'ISBN' => 'required',
                     ];
                 }
         }
@@ -52,7 +52,9 @@ class BookRequest extends FormRequest
         return [
             "title.required" => "Title is required",
             "description.required" => "Description is required",
-            
+            "description.min" => "Description must be at least 10 characters",
+            "author_id.required" => "Author is required",
+            "author_id.exists" => "Author must be valid",
         ];
     }
 }
