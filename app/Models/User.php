@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable implements CanResetPassword
 {
-    use HasFactory;
+    use HasFactory,Notifiable;
 
     protected $fillable = ['name','age','email','phone','password'];
 
@@ -25,6 +28,13 @@ class User extends Model
 	{
 		return $this->hasMany('Email');
 	}
+
+    // ...
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \Illuminate\Auth\Notifications\ResetPassword($token));
+    }
 
     // Helper Methods
 }
