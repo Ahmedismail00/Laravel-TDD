@@ -1,0 +1,8 @@
+Route::resource('admin',AdminController::class);
+Route::resource('admin',AdminController::class);
+Route::resource('user',UserController::class);
+Route::resource('user',UserController::class);
+Route::resource('admin',AdminController::class);
+Route::resource('admin',AdminController::class);
+Route::resource('user',UserController::class);
+Route::resource('user',UserController::class);
