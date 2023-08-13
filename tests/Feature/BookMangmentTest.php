@@ -10,25 +10,23 @@ use Tests\TestCase;
 
 class BookMangmentTest extends TestCase
 {
-    private $response;
+    private $res;
     use RefreshDatabase;
 
     public function testStatus201WithMessageCreatedWhenCreatedABookWhenAuthenticated(): void
-    {
-        // Laravel has its own exception handling that it doesnt throw the error as it it modifies it for better UX
-        // $this->withoutExceptionHandling();
+    {        
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->post("/api/books", $this->data());
-        $response->assertCreated();
-        $response->assertJson([
+        $res = $this->actingAs($user)->post("/api/books", $this->data());
+        $res->assertCreated();
+        $res->assertJson([
             'message' => 'successfully created.'
         ]);
     }
 
     public function testRedirectToLoginIfNotAuthenticatedWith302Status() {
-        $response = $this->post("/api/books", $this->data());
-        $response->assertStatus(302);
-        $response->assertRedirect('/login');
+        $res = $this->post("/api/books", $this->data());
+        $res->assertStatus(302);
+        $res->assertRedirect('/login');
     }
 
     public function testCountOfDatabaseInBooksTableIsOne(){
@@ -39,10 +37,27 @@ class BookMangmentTest extends TestCase
 
     public function testAssertValidatedCookieExistsAfterVisitingBooksRoute(){
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->post("/api/books", $this->data());
-        // dd($response);
-        $response->assertCookie('validated');
+        $res = $this->actingAs($user)->post("/api/books", $this->data());
+        $res->assertCookie('validated');
     }
+
+    public function testLibrarianCanSeeBookCreationForm(){
+        $user = User::factory()->create();
+        $user->role = "librarian";
+        $res = $this->actingAs($user)->get("api/books/create");
+        $res->assertOk();
+        $res->assertViewIs('books.create');
+    }
+
+    public function testNotLibrarianCannotSeeBookCreationForm(){
+        $user = User::factory()->create();
+        $user->role = "non-librarian";
+        $res = $this->actingAs($user)->get("api/books/create");
+        $res->assertForbidden();
+    }
+
+    
+
     private function data(array $data = []) : array
     {
         $author = Author::factory()->create();

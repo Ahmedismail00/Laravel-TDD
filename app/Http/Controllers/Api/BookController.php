@@ -17,4 +17,8 @@ class BookController extends ApiGeneratorController
     {
         parent::__construct($request, $model);
     }
+
+    public function create(){
+        return view('books.create');
+    }
 }
