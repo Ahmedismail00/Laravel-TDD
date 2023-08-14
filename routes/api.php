@@ -22,5 +22,9 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 
 Route::resource('books', BookController::class)->middleware(["auth","validated"]);
-Route::get('books/create',[BookController::class,"create"])->middleware(['can:create,App\Models\Book']);
 Route::resource('authors', AuthorController::class);
+Route::get('books/create',[BookController::class,"create"])->middleware(['can:create,App\Models\Book']);
+
+Route::get("demo",function (){
+    return \App\Facades\Char::koko();
+});
